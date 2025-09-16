@@ -12,7 +12,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL") // 用于迁移
+  // directUrl = env("DIRECT_URL") // 用于迁移
 }
 
 // 用户表
