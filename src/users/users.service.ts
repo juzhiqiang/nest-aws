@@ -1,6 +1,6 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UserResponse } from './dto/user-response.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
@@ -15,32 +15,32 @@ export class UsersService {
   /**
    * 创建新用户
    */
-  async create(createUserDto: CreateUserDto): Promise<UserResponse> {
-    const { email, name, password } = createUserDto;
+//   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
+//     const { email, name, password } = createUserDto;
 
-    // 检查邮箱是否已存在
-    const existingUser = await this.prisma.users.findUnique({
-      where: { email },
-    });
+//     // 检查邮箱是否已存在
+//     const existingUser = await this.prisma.users.findUnique({
+//       where: { email },
+//     });
 
-    if (existingUser) {
-      throw new ConflictException('Email already exists');
-    }
+//     if (existingUser) {
+//       throw new ConflictException('Email already exists');
+//     }
 
-    // 加密密码
-    const hashedPassword = await bcrypt.hash(password, 10);
+//     // 加密密码
+//     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 创建用户
-    const user = await this.prisma.users.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-      },
-    });
+//     // 创建用户
+//     const user = await this.prisma.users.create({
+//       data: {
+//         email,
+//         name,
+//         password: hashedPassword,
+//       },
+//     });
 
-    return this.excludePassword(user);
-  }
+//     return this.excludePassword(user);
+//   }
 
   /**
    * 获取所有用户（分页）
@@ -108,43 +108,43 @@ export class UsersService {
   /**
    * 更新用户信息
    */
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserResponse> {
-    // 检查用户是否存在
-    const existingUser = await this.prisma.users.findUnique({
-      where: { id },
-    });
+//   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserResponse> {
+//     // 检查用户是否存在
+//     const existingUser = await this.prisma.users.findUnique({
+//       where: { id },
+//     });
 
-    if (!existingUser) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
+//     if (!existingUser) {
+//       throw new NotFoundException(`User with ID ${id} not found`);
+//     }
 
-    // 如果更新邮箱，检查邮箱是否已被其他用户使用
-    if (updateUserDto.email && updateUserDto.email !== existingUser.email) {
-      const emailExists = await this.prisma.users.findUnique({
-        where: { email: updateUserDto.email },
-      });
+//     // 如果更新邮箱，检查邮箱是否已被其他用户使用
+//     if (updateUserDto.email && updateUserDto.email !== existingUser.email) {
+//       const emailExists = await this.prisma.users.findUnique({
+//         where: { email: updateUserDto.email },
+//       });
 
-      if (emailExists) {
-        throw new ConflictException('Email already exists');
-      }
-    }
+//       if (emailExists) {
+//         throw new ConflictException('Email already exists');
+//       }
+//     }
 
-    // 准备更新数据
-    const updateData: any = { ...updateUserDto };
+//     // 准备更新数据
+//     const updateData: any = { ...updateUserDto };
 
-    // 如果更新密码，先加密
-    if (updateUserDto.password) {
-      updateData.password = await bcrypt.hash(updateUserDto.password, 10);
-    }
+//     // 如果更新密码，先加密
+//     if (updateUserDto.password) {
+//       updateData.password = await bcrypt.hash(updateUserDto.password, 10);
+//     }
 
-    // 更新用户
-    const updatedUser = await this.prisma.users.update({
-      where: { id },
-      data: updateData,
-    });
+//     // 更新用户
+//     const updatedUser = await this.prisma.users.update({
+//       where: { id },
+//       data: updateData,
+//     });
 
-    return this.excludePassword(updatedUser);
-  }
+//     return this.excludePassword(updatedUser);
+//   }
 
   /**
    * 删除用户
@@ -170,52 +170,52 @@ export class UsersService {
   /**
    * 验证用户密码
    */
-  async validatePassword(email: string, password: string): Promise<UserResponse | null> {
-    const user = await this.findByEmail(email);
+//   async validatePassword(email: string, password: string): Promise<UserResponse | null> {
+//     const user = await this.findByEmail(email);
 
-    if (!user) {
-      return null;
-    }
+//     if (!user) {
+//       return null;
+//     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-      return null;
-    }
+//     if (!isPasswordValid) {
+//       return null;
+//     }
 
-    return this.excludePassword(user);
-  }
+//     return this.excludePassword(user);
+//   }
 
   /**
    * 更改用户密码
    */
-  async changePassword(id: number, oldPassword: string, newPassword: string): Promise<UserResponse> {
-    const user = await this.prisma.users.findUnique({
-      where: { id },
-    });
+//   async changePassword(id: number, oldPassword: string, newPassword: string): Promise<UserResponse> {
+//     const user = await this.prisma.users.findUnique({
+//       where: { id },
+//     });
 
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
+//     if (!user) {
+//       throw new NotFoundException(`User with ID ${id} not found`);
+//     }
 
-    // 验证旧密码
-    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+//     // 验证旧密码
+//     const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
 
-    if (!isOldPasswordValid) {
-      throw new ConflictException('Old password is incorrect');
-    }
+//     if (!isOldPasswordValid) {
+//       throw new ConflictException('Old password is incorrect');
+//     }
 
-    // 加密新密码
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+//     // 加密新密码
+//     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    // 更新密码
-    const updatedUser = await this.prisma.users.update({
-      where: { id },
-      data: { password: hashedNewPassword },
-    });
+//     // 更新密码
+//     const updatedUser = await this.prisma.users.update({
+//       where: { id },
+//       data: { password: hashedNewPassword },
+//     });
 
-    return this.excludePassword(updatedUser);
-  }
+//     return this.excludePassword(updatedUser);
+//   }
 
   /**
    * 搜索用户（按邮箱或姓名）
