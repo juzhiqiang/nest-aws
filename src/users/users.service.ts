@@ -52,7 +52,6 @@ export class UsersService {
     totalPages: number;
   }> {
     const skip = (page - 1) * limit;
-
     const [users, total] = await Promise.all([
       this.prisma.users.findMany({
         skip,
