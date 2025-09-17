@@ -30,6 +30,23 @@ async function bootstrap() {
     noCache: true,
   });
 
+  // History API Fallback 中间件，除这个方案还可以使用路由守卫来做
+  app.use((req, res, next) => {
+    // 排除 API 和静态资源路径
+    if (req.url.startsWith('/api') || req.url.startsWith('/static')) {
+      return next();
+    }
+
+    // 如果请求的是文件（有扩展名），继续处理
+    if (req.url.includes('.')) {
+      return next();
+    }
+
+    // 其他所有请求重定向到根路径
+    req.url = '/';
+    next();
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
