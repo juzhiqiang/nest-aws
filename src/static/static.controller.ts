@@ -9,8 +9,4 @@ export class StaticController {
     return res.sendFile(join(__dirname, '..', '..', 'public', 'index.html'));
   }
 
-  @Get(':filename')
-  getStaticFile(@Param('filename') filename: string, @Res() res: Response) {
-    return res.sendFile(join(__dirname, '..', '..', 'public', filename));
-  }
 }
