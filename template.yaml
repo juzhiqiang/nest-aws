@@ -6,6 +6,7 @@ Globals:
   Function:
     Timeout: 30
     MemorySize: 1024
+    # 指定环境性能好
     Runtime: nodejs20.x
     Architectures: ['arm64']
     Environment:
@@ -15,6 +16,7 @@ Globals:
       Size: 512
   Api:
     OpenApiVersion: '2.0'
+    # 跨域配置
     Cors:
       AllowMethods: "'*'"
       AllowHeaders: "'Content-Type,Authorization'"
