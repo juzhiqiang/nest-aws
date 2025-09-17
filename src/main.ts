@@ -7,6 +7,11 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // 设置全局API前缀，排除根路径
+  app.setGlobalPrefix('api', {
+    exclude: ['/'],
+  });
+
   app.useStaticAssets(join(__dirname, '..', 'assets'), {
     prefix: '/static/', // 明确指定前缀
   });

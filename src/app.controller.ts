@@ -9,7 +9,6 @@ export class AppController {
   @Render('index.html') // 直接指定 .html 文件
   getHome() {
     return {
-      title: 'Welcome to NestJS',
       message: 'Hello World! 123',
       users: [
         { name: 'John', age: 30, active: true },
