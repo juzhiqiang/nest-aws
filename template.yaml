@@ -59,6 +59,13 @@ Resources:
         - S3CrudPolicy:
             BucketName: aladdinagi-assets
         - VPCAccessPolicy: {}
+      VpcConfig:
+        # 安全组
+        SecurityGroupIds:
+          - sg-0189bffacd8cd1ea4
+        # 子网
+        SubnetIds:
+          - subnet-08dee1e892b91a0eb
       Events:
         ApiEvent:
           Type: Api
