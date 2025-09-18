@@ -12,24 +12,25 @@ async function bootstrap() {
     exclude: ['/'],
   });
 
-  app.useStaticAssets(join(__dirname, '..', 'assets'), {
+  app.useStaticAssets(join(__dirname, '..', '..', 'assets'), {
     prefix: '/static/', // 明确指定前缀
   });
 
   // 配置模板目录
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setBaseViewsDir(join(__dirname, '..', '..', 'views'));
 
-  // 设置模板引擎为 html
-  app.setViewEngine('html');
 
   // 配置 Nunjucks 引擎
-  nunjucks.configure(join(__dirname, '..', 'views'), {
+  nunjucks.configure(join(__dirname, '..', '..', 'views'), {
     autoescape: true,
     express: app.getHttpAdapter().getInstance(),
     watch: true,
     noCache: true,
   });
 
+  // 设置模板引擎为 html
+  app.setViewEngine('html');
+  
   // History API Fallback 中间件，除这个方案还可以使用路由守卫来做
   app.use((req, res, next) => {
     // 排除 API 和静态资源路径

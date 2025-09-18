@@ -1,26 +1,18 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL") // 用于迁移
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// 用户表
 model Users {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  name       String?
-  password   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id(map: "users_pkey") @default(autoincrement())
+  email     String    @unique(map: "users_email_key") @db.VarChar(255)
+  name      String?   @db.VarChar(255)
+  password  String?   @db.VarChar(255)
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @updatedAt @db.Timestamp(6)
 }
