@@ -161,8 +161,8 @@ export class UsersService {
    * 删除用户
    */
   async remove(id: number): Promise<{ message: string }> {
-    // 检查用户是否存在
-    const existingUser = await this.prisma.users.findUnique({
+    // 检查用户是否存在 - 使用读库
+    const existingUser = await this.prisma.reader.users.findUnique({
       where: { id },
     });
 
@@ -170,8 +170,8 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    // 删除用户
-    await this.prisma.users.delete({
+    // 删除用户 - 使用写库
+    await this.prisma.writer.users.delete({
       where: { id },
     });
 

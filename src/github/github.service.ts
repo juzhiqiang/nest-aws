@@ -9,7 +9,7 @@ export class GithubService {
 
   async create(createGithubUserDto: CreateGithubUserDto) {
     const githubInfo = await this.fetchGithubUser(createGithubUserDto.github_token);
-    return this.prisma.github_users.create({
+    return this.prisma.writer.github_users.create({
       data: {
         github_token: createGithubUserDto.github_token,
         github_username: githubInfo.login,
@@ -23,7 +23,7 @@ export class GithubService {
   }
 
   async findAll() {
-    return this.prisma.github_users.findMany({
+    return this.prisma.reader.github_users.findMany({
       select: {
         id: true,
         github_username: true,
@@ -39,13 +39,13 @@ export class GithubService {
   }
 
   async remove(id: number) {
-    return this.prisma.github_users.delete({
+    return this.prisma.writer.github_users.delete({
       where: { id },
     });
   }
 
   async createManual(createManualUserDto: CreateManualUserDto) {
-    return this.prisma.github_users.create({
+    return this.prisma.writer.github_users.create({
       data: {
         github_token: "",
         github_username: createManualUserDto.username,
