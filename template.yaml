@@ -24,6 +24,7 @@ Globals:
       MaxAge: 600
 
 Resources:
+  # 存储 Node.js 依赖包，避免每次部署都上传重复的 node_modules
   NodeModulesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -32,8 +33,10 @@ Resources:
       ContentUri: layer/
       CompatibleRuntimes:
         - nodejs20.x
+      # 删除栈时保留此层，避免删除函数时丢失依赖
       RetentionPolicy: Retain
 
+  #(API Gateway) 配置文件
   Api:
     Type: AWS::Serverless::Api
     Properties:
@@ -41,9 +44,10 @@ Resources:
       BinaryMediaTypes:
         - 'image/*'
         - 'multipart/form-data'
+      # 禁用默认授权验证，自定义授权器在事件中处理
       Auth:
         DefaultAuthorizer: NONE
-
+  #Lambda 函数
   NestjsFunction:
     Type: AWS::Serverless::Function
     Metadata:
@@ -55,17 +59,23 @@ Resources:
       Timeout: 30
       Layers:
         - Ref: NodeModulesLayer
+      # 权限策略
       Policies:
+        #对 aladdinagi-assets 桶的完整访问权限，用于上传文件到 S3 桶中
         - S3CrudPolicy:
             BucketName: aladdinagi-assets
         - VPCAccessPolicy: {}
+      # VPC配置，用于访问私有网络中的资源
       VpcConfig:
         # 安全组
         SecurityGroupIds:
-          - sg-0189bffacd8cd1ea4
+          - sg-0be74f37bee5f7474 # lambda 关联的安全组
         # 子网
         SubnetIds:
-          - subnet-08dee1e892b91a0eb
+          # 私有子网
+          - subnet-012e9647bf2e94940
+          - subnet-07c20fd36f42f01b6
+          - subnet-05b8accf3f1116f4f
       Events:
         ApiEvent:
           Type: Api
@@ -77,10 +87,13 @@ Resources:
               Authorizer: NONE
       AutoPublishAlias: live
 
+# 定义部署完成后输出的重要信息
 Outputs:
+  # API Gateway 的端点 URL
   ApiEndpoint:
     Description: API Gateway endpoint URL
     Value: Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev'
+  # Lambda 函数的 ARN (Amazon Resource Name)
   FunctionArn:
     Description: Lambda Function ARN
     Value: GetAtt NestjsFunction.Arn
