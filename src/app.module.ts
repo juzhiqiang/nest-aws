@@ -6,8 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { GithubModule } from './github/github.module';
 
 @Module({
-  imports: [GithubModule],
-  // imports: [PrismaModule, UsersModule, GithubModule],
+  imports: [PrismaModule, UsersModule, GithubModule],
   controllers: [AppController],
   providers: [AppService],
 })

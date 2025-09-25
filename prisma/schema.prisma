@@ -18,7 +18,7 @@ model users {
 
 model github_users {
   id              Int       @id @default(autoincrement())
-  github_token    String    @db.VarChar(500)
+  github_token    String   @db.VarChar(500)
   github_username String    @db.VarChar(255)
   github_id       Int?
   avatar_url      String?   @db.VarChar(500)

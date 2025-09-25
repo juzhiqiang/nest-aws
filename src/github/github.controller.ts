@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Delete, Param, Body, Render } from '@nestjs/common';
 import { GithubService } from './github.service';
 import { CreateGithubUserDto } from './dto/create-github-user.dto';
+import { CreateManualUserDto } from './dto/create-manual-user.dto';
 
 @Controller('github')
 export class GithubController {
@@ -25,5 +26,10 @@ export class GithubController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.githubService.remove(+id);
+  }
+
+  @Post('manual')
+  async createManual(@Body() createManualUserDto: CreateManualUserDto) {
+    return await this.githubService.createManual(createManualUserDto);
   }
 }
