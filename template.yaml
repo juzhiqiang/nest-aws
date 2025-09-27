@@ -82,7 +82,7 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
-            RestApiId: Ref Api
+            RestApiId: !Ref Api
             Auth:
               Authorizer: NONE
       AutoPublishAlias: live
@@ -92,8 +92,8 @@ Outputs:
   # API Gateway 的端点 URL
   ApiEndpoint:
     Description: API Gateway endpoint URL
-    Value: Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev'
+    Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev'
   # Lambda 函数的 ARN (Amazon Resource Name)
   FunctionArn:
     Description: Lambda Function ARN
-    Value: GetAtt NestjsFunction.Arn
+    Value: !GetAtt NestjsFunction.Arn
