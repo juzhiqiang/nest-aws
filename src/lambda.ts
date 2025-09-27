@@ -7,8 +7,8 @@ import {
 } from '@nestjs/platform-express';
 import express from 'express';
 import { Handler, Context, APIGatewayProxyEvent } from 'aws-lambda';
-// nestjs 官方推荐，也可以使用serverless-http
-import { createServer, proxy } from 'aws-serverless-express';
+// 使用serverless-http替代aws-serverless-express
+import serverless from 'serverless-http';
 
 let cachedServer: any;
 
@@ -36,17 +36,19 @@ async function createNestApp() {
     const { join } = require('path');
     const nunjucks = require('nunjucks');
 
-    app.useStaticAssets(join(__dirname, 'assets'), {
-      prefix: '/static/',
+    app.useStaticAssets(join(__dirname,  'assets'), {
+      prefix: '/static/', // 明确指定前缀
     });
 
-    app.setBaseViewsDir(join(__dirname, 'views'));
+    // 配置模板目录
+    app.setBaseViewsDir(join(__dirname,  'views'));
 
-    nunjucks.configure(join(__dirname, 'views'), {
+    // 配置 Nunjucks 引擎
+    nunjucks.configure(join(__dirname,  'views'), {
       autoescape: true,
-      express: expressApp,
-      watch: false,
-      noCache: true,
+      express: app.getHttpAdapter().getInstance(),
+      watch: false, // 在Lambda中禁用文件监控
+      noCache: false, // 启用缓存以提高性能
     });
 
     app.setViewEngine('html');
@@ -75,8 +77,8 @@ async function createNestApp() {
       next();
     });
 
-    // 创建 serverless express 服务器
-    cachedServer = createServer(expressApp);
+    // 创建 serverless 处理器
+    cachedServer = serverless(expressApp);
   }
 
   return cachedServer;
@@ -92,7 +94,7 @@ export const handler: Handler = async (
 
   try {
     const server = await createNestApp();
-    return await proxy(server, event, context, 'PROMISE').promise;
+    return await server(event, context);
   } catch (error) {
     console.error('Lambda handler error:', error);
     return {
@@ -103,19 +105,4 @@ export const handler: Handler = async (
       }),
     };
   }
-};
-
-// 预热函数（可选）
-export const warmup: Handler = async (event: any) => {
-  if (event.source === 'aws.events' || event.detail?.source === 'warmup') {
-    console.log('Lambda warming up...');
-    await createNestApp();
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Lambda warmed up successfully' }),
-    };
-  }
-
-  // 如果不是预热事件，正常处理
-  return handler(event as APIGatewayProxyEvent, {} as Context);
 };

@@ -10,7 +10,6 @@ Globals:
     Environment:
       Variables:
         NODE_OPTIONS: --enable-source-maps
-        NODE_ENV: production
     EphemeralStorage:
       Size: 512
   Api:
@@ -24,8 +23,8 @@ Resources:
   NodeModulesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: nest-dependencies
-      Description: Node modules for Nest.js application
+      LayerName: nest-dependencies-v3
+      Description: Node modules for Nest.js application with aws-serverless-express
       ContentUri: ..\..\layer
       CompatibleRuntimes:
       - nodejs20.x
@@ -69,6 +68,8 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: Api
+            Auth:
+              Authorizer: NONE
         RootApiEvent:
           Type: Api
           Properties:
@@ -76,6 +77,8 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: Api
+            Auth:
+              Authorizer: NONE
       AutoPublishAlias: live
 Outputs:
   ApiEndpoint:

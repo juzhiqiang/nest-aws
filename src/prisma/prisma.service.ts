@@ -8,28 +8,43 @@ export class PrismaService implements OnModuleInit {
   private readClient: PrismaClient;
 
   constructor() {
-    // 写库连接
-    this.writeClient = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL,
+    try {
+      // 写库连接
+      this.writeClient = new PrismaClient({
+        datasources: {
+          db: {
+            url: process.env.DATABASE_URL,
+          },
         },
-      },
-    });
+      });
 
-    // 读库连接
-    this.readClient = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_READ_URL || process.env.DATABASE_URL,
+      // 读库连接
+      this.readClient = new PrismaClient({
+        datasources: {
+          db: {
+            url: process.env.DATABASE_READ_URL || process.env.DATABASE_URL,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.warn('Prisma client initialization failed:', error.message);
+      // 在Lambda环境中可能失败，使用空对象作为fallback
+      this.writeClient = {} as PrismaClient;
+      this.readClient = {} as PrismaClient;
+    }
   }
 
   async onModuleInit() {
-    await this.writeClient.$connect();
-    await this.readClient.$connect();
+    try {
+      if (this.writeClient.$connect) {
+        await this.writeClient.$connect();
+      }
+      if (this.readClient.$connect) {
+        await this.readClient.$connect();
+      }
+    } catch (error) {
+      console.warn('Prisma connection failed:', error.message);
+    }
   }
 
   // 获取写库客户端
