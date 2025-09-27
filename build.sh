@@ -59,7 +59,37 @@ prepare_layer() {
 
     # 进入 layer 目录安装生产依赖
     cd layer/nodejs
+
+    # 创建优化的 package.json，排除大型不必要的依赖
+    cat > package.json << 'EOF'
+{
+  "name": "nest-aws-layer",
+  "version": "0.0.1",
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "@prisma/client": "6.16.2",
+    "express": "^5.1.0",
+    "nunjucks": "^3.2.4",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "serverless-http": "^4.0.0"
+  }
+}
+EOF
+
     yarn install --production --frozen-lockfile
+
+    # 删除不需要的文件以进一步减少大小
+    find node_modules -name "*.d.ts" -delete
+    find node_modules -name "*.map" -delete
+    find node_modules -name "README*" -delete
+    find node_modules -name "CHANGELOG*" -delete
+    find node_modules -name "*.md" -delete
+    find node_modules -name "test" -type d -exec rm -rf {} + 2>/dev/null || true
+    find node_modules -name "tests" -type d -exec rm -rf {} + 2>/dev/null || true
+    find node_modules -name "docs" -type d -exec rm -rf {} + 2>/dev/null || true
 
     # 返回根目录
     cd ../../

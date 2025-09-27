@@ -12,6 +12,7 @@ Globals:
     Environment:
       Variables:
         NODE_OPTIONS: '--enable-source-maps'
+        NODE_ENV: 'production'
     EphemeralStorage:
       Size: 512
   Api:
@@ -83,8 +84,12 @@ Resources:
             Path: /{proxy+}
             Method: ANY
             RestApiId: !Ref Api
-            Auth:
-              Authorizer: NONE
+        RootApiEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+            RestApiId: !Ref Api
       AutoPublishAlias: live
 
 # 定义部署完成后输出的重要信息

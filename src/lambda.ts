@@ -27,30 +27,29 @@ async function createNestApp() {
     // 启用 CORS
     app.enableCors();
 
-    // 设置全局API前缀，排除根路径
+    // 设置全局API前缀，排除根路径和github路径
     app.setGlobalPrefix('api', {
-      exclude: ['/'],
+      exclude: ['/', 'github', 'github/*'],
     });
 
-    // 如果你使用 Nunjucks，在这里配置
-    if (process.env.NODE_ENV === 'production') {
-      const { join } = require('path');
-      const nunjucks = require('nunjucks');
+    // 配置静态资源和模板
+    const { join } = require('path');
+    const nunjucks = require('nunjucks');
 
-      app.useStaticAssets(join(__dirname, '..', '..', 'assets'), {
-        prefix: '/static/', // 明确指定前缀
-      });
-      app.setBaseViewsDir(join(__dirname, '..', '..', 'views'));
+    app.useStaticAssets(join(__dirname, 'assets'), {
+      prefix: '/static/',
+    });
 
-      nunjucks.configure(join(__dirname, '..', '..', 'views'), {
-        autoescape: true,
-        express: expressApp,
-        watch: false, // Lambda 环境建议关闭
-        noCache: true,
-      });
+    app.setBaseViewsDir(join(__dirname, 'views'));
 
-      app.setViewEngine('html');
-    }
+    nunjucks.configure(join(__dirname, 'views'), {
+      autoescape: true,
+      express: expressApp,
+      watch: false,
+      noCache: true,
+    });
+
+    app.setViewEngine('html');
 
     // 初始化应用
     await app.init();
@@ -58,7 +57,11 @@ async function createNestApp() {
     // History API Fallback 中间件，除这个方案还可以使用路由守卫来做
     expressApp.use((req, res, next) => {
       // 排除 API 和静态资源路径
-      if (req.url.startsWith('/api') || req.url.startsWith('/static')) {
+      if (
+        req.url.startsWith('/api') ||
+        req.url.startsWith('/static') ||
+        req.url.startsWith('/github')
+      ) {
         return next();
       }
 
