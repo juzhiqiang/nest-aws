@@ -102,25 +102,22 @@ copy_assets() {
     echo "📋 复制静态资源..."
 
     # 复制视图文件
-    if [ -d "views" ]; then
-        cp -r views dist/
-        echo "✅ 视图文件已复制"
-    fi
+    [ -d "views" ] && cp -r views dist/ && echo "✅ 视图文件已复制"
 
     # 复制静态资源
-    if [ -d "assets" ]; then
-        cp -r assets dist/
-        echo "✅ 静态资源已复制"
-    fi
+    [ -d "assets" ] && cp -r assets dist/ && echo "✅ 静态资源已复制"
 
-     # 复制 Prisma Client（必须）
+    # 确保 layer/nodejs/node_modules 存在
+    mkdir -p layer/nodejs/node_modules
+
+    # 复制 Prisma Client
     if [ -d "node_modules/@prisma/client" ]; then
         mkdir -p layer/nodejs/node_modules/@prisma
         cp -r node_modules/@prisma/client layer/nodejs/node_modules/@prisma/
         echo "✅ Prisma Client 已复制到 Lambda Layer"
     fi
 
-    # 复制 Prisma 引擎（必须，否则 Lambda 500）
+    # 复制 Prisma 引擎
     if [ -d "node_modules/.prisma" ]; then
         cp -r node_modules/.prisma layer/nodejs/node_modules/
         echo "✅ Prisma 引擎已复制到 Lambda Layer"
