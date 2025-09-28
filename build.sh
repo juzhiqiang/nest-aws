@@ -113,6 +113,19 @@ copy_assets() {
         echo "✅ 静态资源已复制"
     fi
 
+     # 复制 Prisma Client（必须）
+    if [ -d "node_modules/@prisma/client" ]; then
+        mkdir -p layer/nodejs/node_modules/@prisma
+        cp -r node_modules/@prisma/client layer/nodejs/node_modules/@prisma/
+        echo "✅ Prisma Client 已复制到 Lambda Layer"
+    fi
+
+    # 复制 Prisma 引擎（必须，否则 Lambda 500）
+    if [ -d "node_modules/.prisma" ]; then
+        cp -r node_modules/.prisma layer/nodejs/node_modules/
+        echo "✅ Prisma 引擎已复制到 Lambda Layer"
+    fi
+
     echo "✅ 资源复制完成"
 }
 

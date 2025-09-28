@@ -24,7 +24,7 @@ Resources:
   NodeModulesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: nest-dependencies-v3
+      LayerName: nest-dependencies-v4
       Description: Node modules for Nest.js application with aws-serverless-express
       ContentUri: ..\..\layer
       CompatibleRuntimes:
