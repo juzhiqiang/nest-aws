@@ -11,6 +11,7 @@ Globals:
     Architectures: ['arm64']
     Environment:
       Variables:
+        STAGE: dev
         NODE_OPTIONS: '--enable-source-maps'
     EphemeralStorage:
       Size: 512

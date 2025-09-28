@@ -37,7 +37,7 @@ async function createNestApp() {
     const nunjucks = require('nunjucks');
 
     app.useStaticAssets(join(__dirname,  'assets'), {
-      prefix: '/static/', // 明确指定前缀
+      prefix: `/static/`, // 明确指定前缀
     });
 
     // 配置模板目录

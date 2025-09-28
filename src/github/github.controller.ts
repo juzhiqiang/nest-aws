@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Delete, Param, Body, Render } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  Body,
+  Render,
+} from '@nestjs/common';
 import { GithubService } from './github.service';
 import { CreateGithubUserDto } from './dto/create-github-user.dto';
 import { CreateManualUserDto } from './dto/create-manual-user.dto';
@@ -10,7 +18,9 @@ export class GithubController {
   @Get()
   @Render('github-form.html')
   showForm() {
-    return {};
+    return {
+      stagePrefix: process.env.STAGE ? `/${process.env.STAGE}` : null,
+    };
   }
 
   @Get('list')
