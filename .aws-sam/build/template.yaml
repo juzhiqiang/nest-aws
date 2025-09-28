@@ -24,7 +24,7 @@ Resources:
   NodeModulesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: nest-dependencies-v4
+      LayerName: nest-dependencies-v5
       Description: Node modules for Nest.js application with aws-serverless-express
       ContentUri: ..\..\layer
       CompatibleRuntimes:
@@ -48,6 +48,11 @@ Resources:
       CodeUri: ..\..\dist
       MemorySize: 3008
       Timeout: 30
+      Environment:
+        Variables:
+          DATABASE_URL: 
+          DATABASE_READ_URL: 
+          NODE_ENV: production
       Layers:
       - Ref: NodeModulesLayer
       Policies:
